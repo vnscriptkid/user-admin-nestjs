@@ -14,7 +14,7 @@ async function bootstrap() {
 
   app.enableCors({
     origin: 'http://localhost:4200',
-    credentials: true, // passing cookie data for every req (no need {passthrough: true } in controller)
+    credentials: true,
   });
 
   await app.listen(3000);

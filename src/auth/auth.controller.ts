@@ -36,7 +36,7 @@ export class AuthController {
   async login(
     @Body('email') email: string,
     @Body('password') password: string,
-    @Res() response: Response,
+    @Res({ passthrough: true }) response: Response,
   ) {
     const { user, jwtToken } = await this.authService.login(email, password);
 
@@ -54,5 +54,12 @@ export class AuthController {
     const user = await this.userService.findById(data.id);
 
     return user;
+  }
+
+  @Post('logout')
+  async logout(@Res({ passthrough: true }) response: Response) {
+    response.clearCookie('jwt');
+
+    return { message: 'success' };
   }
 }
