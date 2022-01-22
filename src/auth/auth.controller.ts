@@ -1,11 +1,13 @@
 import {
   BadRequestException,
   Body,
+  ClassSerializerInterceptor,
   Controller,
   Get,
   Post,
   Req,
   Res,
+  UseInterceptors,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Request, Response } from 'express';
@@ -14,6 +16,7 @@ import { AuthService } from './auth.service';
 import { RegisterDto } from './dtos/register.dto';
 
 @Controller('auth')
+@UseInterceptors(ClassSerializerInterceptor)
 export class AuthController {
   constructor(
     private readonly userService: UserService,
