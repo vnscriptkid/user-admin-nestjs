@@ -1,6 +1,7 @@
 import { UpdateUserDto } from './dtos/update-user.dto';
 import {
   Body,
+  ClassSerializerInterceptor,
   Controller,
   Delete,
   Get,
@@ -9,6 +10,7 @@ import {
   Post,
   Query,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { CreateUserDto } from './dtos/create-user.dto';
@@ -16,6 +18,7 @@ import { UserService } from './user.service';
 import { PaginationDto } from './dtos/pagination.dto';
 
 @UseGuards(AuthGuard)
+@UseInterceptors(ClassSerializerInterceptor)
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
