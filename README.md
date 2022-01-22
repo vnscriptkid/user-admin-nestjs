@@ -26,3 +26,7 @@
   - `update mysql.user set host='%' where user='root' and host = 'localhost';`
   - `flush privileges;`
   - `mysql -u root -p`
+
+## ref:
+
+- https://viblo.asia/p/nestjs-xay-dung-project-tich-hop-typeorm-repository-pattern-Eb85o9VBZ2G
