@@ -7,11 +7,13 @@ import {
   Post,
   Req,
   Res,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Request, Response } from 'express';
 import { UserService } from 'src/user/user.service';
+import { AuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dtos/register.dto';
 
@@ -45,6 +47,7 @@ export class AuthController {
     return user;
   }
 
+  @UseGuards(AuthGuard)
   @Get('me')
   async currentUser(@Req() request: Request) {
     const jwt = request.cookies['jwt'];
@@ -56,6 +59,7 @@ export class AuthController {
     return user;
   }
 
+  @UseGuards(AuthGuard)
   @Post('logout')
   async logout(@Res({ passthrough: true }) response: Response) {
     response.clearCookie('jwt');
