@@ -1,4 +1,11 @@
-import { BadRequestException, Body, Controller, Post } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Post,
+  Res,
+} from '@nestjs/common';
+import { Response } from 'express';
 import { UserService } from 'src/user/user.service';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dtos/register.dto';
@@ -19,7 +26,15 @@ export class AuthController {
   }
 
   @Post('login')
-  login(@Body('email') email: string, @Body('password') password: string) {
-    return this.authService.login(email, password);
+  async login(
+    @Body('email') email: string,
+    @Body('password') password: string,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    const { user, jwtToken } = await this.authService.login(email, password);
+
+    response.cookie('jwt', jwtToken, { httpOnly: true });
+
+    return user;
   }
 }
