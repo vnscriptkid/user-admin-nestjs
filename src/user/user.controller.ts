@@ -7,11 +7,13 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UserService } from './user.service';
+import { PaginationDto } from './dtos/pagination.dto';
 
 @UseGuards(AuthGuard)
 @Controller('users')
@@ -19,8 +21,8 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
-  all() {
-    return this.userService.all();
+  all(@Query() { pageNumber, pageSize }: PaginationDto) {
+    return this.userService.paginate(pageNumber, pageSize);
   }
 
   @Post()

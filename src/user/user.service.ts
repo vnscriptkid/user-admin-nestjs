@@ -19,6 +19,23 @@ export class UserService {
     return this.userRepository.find();
   }
 
+  async paginate(pageNumber: number, pageSize: number) {
+    const [users, total] = await this.userRepository.findAndCount({
+      take: pageSize,
+      skip: (pageNumber - 1) * pageSize,
+    });
+
+    return {
+      data: users,
+      meta: {
+        currentPage: pageNumber,
+        itemsPerPage: pageSize,
+        totalItems: total,
+        totalPages: Math.ceil(total / pageSize),
+      },
+    };
+  }
+
   async create(createUserDto: any) {
     const { first_name, last_name, email, password } = createUserDto;
 
