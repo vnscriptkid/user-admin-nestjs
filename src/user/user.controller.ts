@@ -2,6 +2,7 @@ import { UpdateUserDto } from './dtos/update-user.dto';
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -35,5 +36,11 @@ export class UserController {
   @Patch(':id')
   updateOne(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(id, updateUserDto);
+  }
+
+  @Delete(':id')
+  deleteOne(@Param('id') id: string) {
+    // TODO: can't delete current user
+    return this.userService.delete(id);
   }
 }
