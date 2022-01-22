@@ -1,4 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { UpdateUserDto } from './dtos/update-user.dto';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './models/user.entity';
@@ -35,5 +40,29 @@ export class UserService {
 
   findById(id: string) {
     return this.userRepository.findOne(id);
+  }
+
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    const user = await this.findById(id);
+
+    if (!user) throw new NotFoundException('User not found');
+
+    let { password, email, ...otherProps } = updateUserDto;
+
+    if (email && user.email !== email) {
+      const otherUserWithThisEmail = this.findByEmail(email);
+
+      if (otherUserWithThisEmail)
+        throw new BadRequestException(`Email ${email} is already in use.`);
+    }
+
+    if (password) password = await bcrypt.hash(password, 12);
+
+    Object.assign(user, {
+      password,
+      ...otherProps,
+    });
+
+    return await this.userRepository.save(user);
   }
 }
