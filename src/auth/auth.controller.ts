@@ -1,10 +1,14 @@
 import { BadRequestException, Body, Controller, Post } from '@nestjs/common';
 import { UserService } from 'src/user/user.service';
+import { AuthService } from './auth.service';
 import { RegisterDto } from './dtos/register.dto';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly authService: AuthService,
+  ) {}
 
   @Post('register')
   register(@Body() body: RegisterDto) {
@@ -14,8 +18,8 @@ export class AuthController {
     return this.userService.create(body);
   }
 
-  @Post()
-  login(@Body() body) {
-    return 'login';
+  @Post('login')
+  login(@Body('email') email: string, @Body('password') password: string) {
+    return this.authService.login(email, password);
   }
 }
