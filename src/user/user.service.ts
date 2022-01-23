@@ -8,11 +8,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './models/user.entity';
 import * as bcrypt from 'bcryptjs';
+import { CreateUserDto } from './dtos/create-user.dto';
+import { RoleService } from 'src/role/role.service';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
+    private readonly roleService: RoleService,
   ) {}
 
   all() {
@@ -36,8 +39,12 @@ export class UserService {
     };
   }
 
-  async create(createUserDto: any) {
-    const { first_name, last_name, email, password } = createUserDto;
+  async create(createUserDto: CreateUserDto) {
+    const { first_name, last_name, email, password, role_id } = createUserDto;
+
+    const role = await this.roleService.findById(role_id);
+
+    if (!role) throw new BadRequestException(`Role #${role_id} not found.`);
 
     const hash = await bcrypt.hash(password, 12);
 
@@ -46,6 +53,7 @@ export class UserService {
       last_name,
       email,
       password: hash,
+      role,
     });
 
     return this.userRepository.save(user);
