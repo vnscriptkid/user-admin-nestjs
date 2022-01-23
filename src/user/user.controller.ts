@@ -16,7 +16,7 @@ import {
 import { AuthGuard } from 'src/auth/auth.guard';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UserService } from './user.service';
-import { PaginationDto } from './dtos/pagination.dto';
+import { PaginationDto } from '../common/dtos/pagination.dto';
 
 @UseGuards(AuthGuard)
 @UseInterceptors(ClassSerializerInterceptor)
