@@ -6,6 +6,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Exclude, Expose } from 'class-transformer';
 
 @Entity('orders')
 export class Order {
@@ -13,9 +14,11 @@ export class Order {
   id: number;
 
   @Column()
+  @Exclude()
   first_name: string;
 
   @Column()
+  @Exclude()
   last_name: string;
 
   @Column()
@@ -26,4 +29,9 @@ export class Order {
 
   @OneToMany(() => OrderItem, (orderItem) => orderItem.order)
   order_items: OrderItem[];
+
+  @Expose()
+  get name() {
+    return `${this.first_name} ${this.last_name}`;
+  }
 }
