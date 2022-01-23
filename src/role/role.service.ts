@@ -2,23 +2,33 @@ import { CreateRoleDto } from './dtos/create-role.dto';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { UpdateRoleDto } from './dtos/update-role.dto';
 import { RoleRepository } from './role.repository';
+import { PermissionService } from 'src/permission/permission.service';
+import { FindOneOptions } from 'typeorm';
+import { Role } from './models/role.entity';
 
 @Injectable()
 export class RoleService {
-  constructor(private readonly roleRepository: RoleRepository) {}
+  constructor(
+    private readonly roleRepository: RoleRepository,
+    private readonly permissionService: PermissionService,
+  ) {}
 
   all() {
     return this.roleRepository.find();
   }
 
-  create(createRoleDto: CreateRoleDto) {
-    const role = this.roleRepository.create(createRoleDto);
+  async create(createRoleDto: CreateRoleDto) {
+    let { name, permissionIds } = createRoleDto;
+
+    const permissions = await this.permissionService.findByIds(permissionIds);
+
+    const role = this.roleRepository.create({ name, permissions });
 
     return this.roleRepository.save(role);
   }
 
-  findById(id: number) {
-    return this.roleRepository.findOne(id);
+  findById(id: number, opts?: FindOneOptions<Role>) {
+    return this.roleRepository.findOne(id, opts);
   }
 
   findByName(name: string) {

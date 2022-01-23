@@ -22,7 +22,7 @@ export class RoleController {
 
   @Get(':id')
   one(@Param('id') id: number) {
-    return this.roleService.findById(id);
+    return this.roleService.findById(id, { relations: ['permissions'] });
   }
 
   @Post()

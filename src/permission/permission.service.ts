@@ -13,4 +13,8 @@ export class PermissionService {
   all() {
     return this.permissionRepository.find();
   }
+
+  findByIds(ids: number[]) {
+    return this.permissionRepository.findByIds(ids);
+  }
 }
