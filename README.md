@@ -29,4 +29,9 @@
 
 ## ref:
 
-- https://viblo.asia/p/nestjs-xay-dung-project-tich-hop-typeorm-repository-pattern-Eb85o9VBZ2G
+- good structure:
+
+  - https://viblo.asia/p/nestjs-xay-dung-project-tich-hop-typeorm-repository-pattern-Eb85o9VBZ2G
+
+- tree data modeling:
+  - https://www.slideshare.net/billkarwin/models-for-hierarchical-data
