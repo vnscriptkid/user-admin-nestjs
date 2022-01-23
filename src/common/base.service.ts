@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import {
   DeepPartial,
   FindConditions,
+  FindManyOptions,
   FindOneOptions,
   Repository,
 } from 'typeorm';
@@ -10,8 +11,8 @@ import {
 export abstract class BaseService<T, R extends Repository<T>> {
   protected constructor(protected readonly repository: R) {}
 
-  all() {
-    return this.repository.find();
+  all(opts?: FindManyOptions<T>) {
+    return this.repository.find(opts);
   }
 
   async paginate(pageNumber: number, pageSize: number, relations?: string[]) {
