@@ -5,6 +5,7 @@ import {
   Controller,
   Delete,
   Get,
+  NotFoundException,
   Param,
   Patch,
   Post,
@@ -34,17 +35,21 @@ export class UserController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findById(id);
+  async findOne(@Param('id') id: number) {
+    const user = await this.userService.findById(id);
+
+    if (!user) throw new NotFoundException(`User #${id} not found.`);
+
+    return user;
   }
 
   @Patch(':id')
-  updateOne(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+  updateOne(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(id, updateUserDto);
   }
 
   @Delete(':id')
-  deleteOne(@Param('id') id: string) {
+  deleteOne(@Param('id') id: number) {
     // TODO: can't delete current user
     return this.userService.delete(id);
   }

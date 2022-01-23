@@ -8,66 +8,23 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './models/user.entity';
 import * as bcrypt from 'bcryptjs';
-import { CreateUserDto } from './dtos/create-user.dto';
 import { RoleService } from 'src/role/role.service';
+import { BaseService } from 'src/common/base.service';
 
 @Injectable()
-export class UserService {
+export class UserService extends BaseService<User, Repository<User>> {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     private readonly roleService: RoleService,
-  ) {}
-
-  all() {
-    return this.userRepository.find();
-  }
-
-  async paginate(pageNumber: number, pageSize: number) {
-    const [users, total] = await this.userRepository.findAndCount({
-      take: pageSize,
-      skip: (pageNumber - 1) * pageSize,
-    });
-
-    return {
-      data: users,
-      meta: {
-        currentPage: pageNumber,
-        itemsPerPage: pageSize,
-        totalItems: total,
-        totalPages: Math.ceil(total / pageSize),
-      },
-    };
-  }
-
-  async create(createUserDto: CreateUserDto) {
-    const { first_name, last_name, email, password, role_id } = createUserDto;
-
-    const role = await this.roleService.findById(role_id);
-
-    if (!role) throw new BadRequestException(`Role #${role_id} not found.`);
-
-    const hash = await bcrypt.hash(password, 12);
-
-    const user = this.userRepository.create({
-      first_name,
-      last_name,
-      email,
-      password: hash,
-      role,
-    });
-
-    return this.userRepository.save(user);
+  ) {
+    super(userRepository);
   }
 
   findByEmail(email: string) {
-    return this.userRepository.findOne({ email });
+    return this.repository.findOne({ where: { email } });
   }
 
-  findById(id: string) {
-    return this.userRepository.findOne(id);
-  }
-
-  async update(id: string, updateUserDto: UpdateUserDto) {
+  async update(id: number, updateUserDto: UpdateUserDto) {
     const user = await this.findById(id);
 
     if (!user) throw new NotFoundException('User not found');
@@ -89,13 +46,5 @@ export class UserService {
     });
 
     return await this.userRepository.save(user);
-  }
-
-  async delete(id: string) {
-    const user = await this.findById(id);
-
-    if (!user) throw new NotFoundException(`User #${id} not found.`);
-
-    return this.userRepository.remove(user);
   }
 }
