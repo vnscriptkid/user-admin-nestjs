@@ -14,6 +14,7 @@ async function bootstrap() {
       transformOptions: {
         enableImplicitConversion: true,
       },
+      whitelist: true, // filter out fields outside of dto
     }),
   );
 
