@@ -14,10 +14,11 @@ export abstract class BaseService<T, R extends Repository<T>> {
     return this.repository.find();
   }
 
-  async paginate(pageNumber: number, pageSize: number) {
+  async paginate(pageNumber: number, pageSize: number, relations?: string[]) {
     const [list, total] = await this.repository.findAndCount({
       take: pageSize,
       skip: (pageNumber - 1) * pageSize,
+      relations,
     });
 
     return {
