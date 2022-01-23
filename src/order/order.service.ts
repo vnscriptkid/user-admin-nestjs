@@ -9,4 +9,8 @@ export class OrderService extends BaseService<Order, Repository<Order>> {
   constructor(private readonly orderRepository: OrderRepository) {
     super(orderRepository);
   }
+
+  getTotalPerDate() {
+    return this.orderRepository.getTotalPerDate();
+  }
 }

@@ -22,6 +22,11 @@ export class OrderController {
     return this.orderService.paginate(pageNumber, pageSize, ['order_items']);
   }
 
+  @Get('chart')
+  async getChartData() {
+    return this.orderService.getTotalPerDate();
+  }
+
   @Post('export')
   async exportCsv(@Res() res: Response) {
     const parser = new Parser({
